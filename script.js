@@ -83,6 +83,28 @@ function createEquations() {
 //   itemContainer.appendChild(bottomSpacer);
 // }
 
+// display 3, 2, 1 Go!
+function startCountdown() {
+  countdown.textContent = "3";
+  setTimeout(() => {
+    countdown.textContent = "2";
+  }, 1000);
+  setTimeout(() => {
+    countdown.textContent = "1";
+  }, 2000);
+  setTimeout(() => {
+    countdown.textContent = "Go!";
+  }, 3000);
+}
+
+// navigation from splash page to countdown page
+function showCountdown() {
+  countdownPage.hidden = false;
+  splashPage.hidden = true;
+  startCountdown();
+}
+
+// get the value from selection ratio button
 function getRadioValue() {
   let radioValue;
   radioInputs.forEach((radioInput) => {
@@ -97,6 +119,9 @@ function selectQuestionAmount(e) {
   e.preventDefault();
   questionAmount = getRadioValue();
   console.log(questionAmount);
+  if (questionAmount) {
+    showCountdown();
+  }
 }
 
 startForm.addEventListener("click", () => {

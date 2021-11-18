@@ -38,7 +38,41 @@ let finalTime = 0;
 let finalTimeDisplay = "0.0s";
 
 // Scroll
-let scrollY = 0;
+let valueY = 0;
+
+// reset game
+function playAgain() {
+  gamePage.addEventListener("click", startTimer);
+  scorePage.hidden = true;
+  splashPage.hidden = false;
+  equationsArray = [];
+  playGuessArray = [];
+  valueY = 0;
+  playAgainBtn.hidden = true;
+}
+
+// show score page
+function showScorePage() {
+  // show play again button after 1 second
+  setTimeout(() => {
+    playAgainBtn.hidden = false;
+  }, 1000);
+  gamePage.hidden = true;
+  scorePage.hidden = false;
+}
+
+// format & display time in DOM
+function scoresToDOM() {
+  finalTimeDisplay = finalTime.toFixed(1);
+  baseTime = timePlayed.toFixed(1);
+  penaltyTime = penaltyTime.toFixed(1);
+  baseTimeEl.textContent = `Base Time: ${baseTime}s`;
+  penaltyTimeEl.textContent = `Penalty: ${penaltyTime}s`;
+  finalTimeEl.textContent = `${finalTimeDisplay}s`;
+  // scroll to top, go to score page
+  itemContainer.scrollTo({ top: 0, behavior: "instant" });
+  showScorePage();
+}
 
 // stop timer, process results, go to score page
 function checkTime() {
@@ -64,6 +98,7 @@ function checkTime() {
       "final:",
       finalTime
     );
+    scoresToDOM();
   }
 }
 
@@ -86,8 +121,8 @@ function startTimer() {
 // scroll, store user selection in plyerGuessArray
 function select(guessedTrue) {
   //scroll 80px
-  scrollY += 80;
-  itemContainer.scroll(0, scrollY);
+  valueY += 80;
+  itemContainer.scroll(0, valueY);
   // add player guess to array
   return guessedTrue
     ? playGuessArray.push(true)

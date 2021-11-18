@@ -35,10 +35,56 @@ let timePlayed = 0;
 let baseTime = 0;
 let penaltyTime = 0;
 let finalTime = 0;
-let finalTimeDisplay = "0.0s";
+let finalTimeDisplay = "0.0";
 
 // Scroll
 let valueY = 0;
+
+// refresh splash page best scores
+function bestScoresToDOM() {
+  bestScores.forEach((bestScore, index) => {
+    const bestScoreEl = bestScore;
+    bestScoreEl.textContent = `${bestScoreArray[index].bestScore}`;
+  });
+}
+
+// check local storage for best score, set bestScoreArray
+function getSavedBestScores() {
+  if (localStorage.getItem("bestScores")) {
+    bestScoreArray = JSON.parse(localStorage.bestScores);
+  } else {
+    bestScoreArray = [
+      { questions: 10, bestScore: finalTimeDisplay },
+      { questions: 25, bestScore: finalTimeDisplay },
+      { questions: 50, bestScore: finalTimeDisplay },
+      { questions: 99, bestScore: finalTimeDisplay },
+    ];
+    localStorage.setItem(
+      "bestScores",
+      JSON.stringify(bestScoreArray)
+    );
+  }
+  bestScoresToDOM();
+}
+
+// update best score array
+function updateBestScore() {
+  bestScoreArray.forEach((score, index) => {
+    // select correct best score to update
+    if (questionAmount == score.questions) {
+      // return best score as number with one decimal
+      const savedBestScore = Number(bestScoreArray[index].bestScore);
+      // update  if the new final score is less or replacing zero
+      if (savedBestScore === 0 || savedBestScore > finalTime) {
+        bestScoreArray[index].bestScore = finalTimeDisplay;
+      }
+    }
+  });
+  // update splash page
+  bestScoresToDOM();
+  // save to local Storage
+  localStorage.setItem("bestScores", JSON.stringify(bestScoreArray));
+}
 
 // reset game
 function playAgain() {
@@ -69,6 +115,7 @@ function scoresToDOM() {
   baseTimeEl.textContent = `Base Time: ${baseTime}s`;
   penaltyTimeEl.textContent = `Penalty: ${penaltyTime}s`;
   finalTimeEl.textContent = `${finalTimeDisplay}s`;
+  updateBestScore();
   // scroll to top, go to score page
   itemContainer.scrollTo({ top: 0, behavior: "instant" });
   showScorePage();
@@ -276,3 +323,4 @@ startForm.addEventListener("click", () => {
 // Event listeners
 startForm.addEventListener("submit", selectQuestionAmount);
 gamePage.addEventListener("click", startTimer);
+getSavedBestScores();
